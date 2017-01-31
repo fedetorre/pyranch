@@ -10,7 +10,8 @@ class Service(CattleObject):
         if not service_id and not service_name:
             raise RequestError('Service ID or service name must be provided')
         elif service_name and not service_id:
-            service_data = self.find_by_name(environment, service_name)
+            self.name = service_name
+            service_data = self.find_by_name()
             if service_data:
                 self.service_url = '{}/{}'.format(self.object_url, service_data.get('id'))
         else:
@@ -76,6 +77,7 @@ class Service(CattleObject):
         self.publicEndpoints = new_stack.get('publicEndpoints')
         self.upgrade = new_stack.get('upgrade')
         self.service_url = '{}/{}'.format(self.object_url, self.id)
+        return True
 
     def save(self):
         data = {
@@ -89,18 +91,19 @@ class Service(CattleObject):
             "selectorContainer": self.selectorContainer,
             "selectorLink": self.selectorLink
         }
-        self.env.request(self.service_url, 'PUT', data=data)
+        return self.env.request(self.service_url, 'PUT', data=data)
 
     def scale_in(self, scale):
         self.scale -= scale
         if self.scale < 0:
             self.scale += scale
             raise RequestError('Scale can\'t be lower than 0, requested {}'.format(self.scale - scale))
-        self.env.request(self.service_url, 'PUT', {"scale": self.scale})
+        return self.env.request(self.service_url, 'PUT', {"scale": self.scale})
 
     def scale_out(self, scale):
         self.scale += scale
-        self.env.request(self.service_url, 'PUT', {"scale": self.scale})
+        response = self.env.request(self.service_url, 'PUT', {"scale": self.scale})
+        return self.env.request(self.service_url, 'PUT', {"scale": self.scale})
 
     # http://docs.rancher.com/rancher/v1.3/en/api/v2-beta/api-resources/serviceLog/
     def logs(self):
@@ -127,17 +130,17 @@ class Service(CattleObject):
         return self.action('rollback')
 
     def add_service_link(self, service_link):
-        self.action('addservicelink', data=service_link)
+        return self.action('addservicelink', data=service_link)
 
     def remove_service_link(self, service_link):
-        self.action('removeservicelink', data=service_link)
+        return self.action('removeservicelink', data=service_link)
 
     def restart(self, rolling_restart_strategy):
-        self.action('restart', data=rolling_restart_strategy)
+        return self.action('restart', data=rolling_restart_strategy)
 
     def set_service_links(self, service_links):
-        self.action('setservicelinks', data=service_links)
+        return self.action('setservicelinks', data=service_links)
 
     def upgrade(self, in_service_strategy, to_service_strategy):
-        self.action('upgrade', data={'inServiceStrategy': in_service_strategy,
-                                     'toServiceStrategy': to_service_strategy})
+        return self.action('upgrade', data={'inServiceStrategy': in_service_strategy,
+                                            'toServiceStrategy': to_service_strategy})
