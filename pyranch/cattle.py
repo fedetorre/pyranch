@@ -1,6 +1,6 @@
 import requests
 import json
-from urllib.parse import urljoin
+from urlparse import urljoin
 from .exceptions import JSONDecodeError, RequestError, ResponseError
 from .stacks import Stack
 from .services import Service

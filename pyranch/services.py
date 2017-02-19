@@ -46,6 +46,40 @@ class Service(CattleObject):
         self.startOnCreate = service_data.get('startOnCreate') or False
         self.vip = service_data.get('vip') or None
 
+    @property
+    def get_metadata(self):
+        if not self.id:
+            raise RequestError
+        json = {
+            'id': self.id,
+            'name': self.name,
+            'healthState': self.healthState,
+            'instanceIds': self.instanceIds,
+            'system': self.system,
+            'createIndex': self.createIndex,
+            'currentScale': self.currentScale,
+            'fqdn': self.fqdn,
+            'linkedServices': self.linkedServices,
+            'publicEndpoints': self.publicEndpoints,
+            'upgrade': self.upgrade,
+            'assignServiceIpAddress': self.assignServiceIpAddress,
+            'description': self.description,
+            'externalId': self.externalId,
+            'launchConfig': self.launchConfig,
+            'lbConfig': self.lbConfig,
+            'metadata': self.metadata,
+            'retainIp': self.retainIp,
+            'scale': self.scale,
+            'scalePolicy': self.scalePolicy,
+            'secondaryLaunchConfigs': self.secondaryLaunchConfigs,
+            'selectorContainer': self.selectorContainer,
+            'selectorLink': self.selectorLink,
+            'stackId': self.stackId,
+            'startOnCreate': self.startOnCreate,
+            'vip': self.vip,
+        }
+        return json
+
     def create(self):
         data = {
             'assignServiceIpAddress': self.assignServiceIpAddress,

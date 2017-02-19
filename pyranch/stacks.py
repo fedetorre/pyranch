@@ -10,7 +10,8 @@ class Stack(CattleObject):
         if not stack_id and not stack_name:
             raise RequestError('stack ID or stack name must be provided')
         elif stack_name and not stack_id:
-            stack_data = self.find_by_name(environment, stack_name)
+            self.name = stack_name
+            stack_data = self.find_by_name()
             if stack_data:
                 self.stack_url = '{}/{}'.format(self.object_url, stack_data.get('id'))
         else:
@@ -34,6 +35,31 @@ class Stack(CattleObject):
         self.previousExternalId = stack_data.get('previousExternalId') or None
         self.rancherCompose = stack_data.get('rancherCompose') or ''
         self.startOnCreate = stack_data.get('startOnCreate') or False
+
+    @property
+    def get_metadata(self):
+        if not self.id:
+            raise RequestError
+        json = {
+            'id': self.id,
+            'name': self.name,
+            'url': self.env.endpoint + self.stack_url,
+            'healthState': self.healthState,
+            'serviceIds': self.serviceIds,
+            'system': self.system,
+            'binding': self.binding,
+            'description': self.description,
+            'dockerCompose': self.dockerCompose,
+            'env': self.environment,
+            'externalId': self.externalId,
+            'group': self.group,
+            'outputs': self.outputs,
+            'previousEnvironment': self.previousEnvironment,
+            'previousExternalId': self.previousExternalId,
+            'rancherCompose': self.rancherCompose,
+            'startOnCreate': self.startOnCreate
+        }
+        return json
 
     def create(self):
         data = {
