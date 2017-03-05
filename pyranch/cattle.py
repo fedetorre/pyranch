@@ -1,6 +1,11 @@
 import requests
 import json
-from urlparse import urljoin
+try:
+    # Python 3
+    from urllib.parse import urljoin
+except (ImportError) as e:
+    # Python 2
+    from urlparse import urljoin
 from .exceptions import JSONDecodeError, RequestError, ResponseError
 from .stacks import Stack
 from .services import Service
