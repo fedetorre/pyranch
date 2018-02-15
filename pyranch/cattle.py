@@ -7,8 +7,10 @@ except (ImportError) as e:
     # Python 2
     from urlparse import urljoin
 from .exceptions import JSONDecodeError, RequestError, ResponseError
+from .hosts import Host
 from .stacks import Stack
 from .services import Service
+from .subscribe import Subscribe
 
 
 class Environment(object):
@@ -145,9 +147,8 @@ class Environment(object):
         pass
 
     # http://docs.rancher.com/rancher/v1.3/en/api/v2-beta/api-resources/host/
-    def host(self):
-        # TODO
-        pass
+    def host(self, host_id=None, host_name=None):
+        return Host(environment=self, host_id=host_id, host_name=host_name)
 
     # http://docs.rancher.com/rancher/v1.3/en/api/v2-beta/api-resources/identity/
     def identity(self):
@@ -243,9 +244,8 @@ class Environment(object):
         pass
 
     # http://docs.rancher.com/rancher/v1.3/en/api/v2-beta/api-resources/subscribe/
-    def subscribe(self):
-        # TODO
-        pass
+    def subscribe(self, *args, **kwargs):
+        return Subscribe(environment=self, *args, **kwargs)
 
     # http://docs.rancher.com/rancher/v1.3/en/api/v2-beta/api-resources/volume/
     def volume(self):

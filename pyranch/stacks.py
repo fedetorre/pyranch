@@ -7,17 +7,19 @@ class Stack(CattleObject):
 
     def __init__(self, environment, stack_id=None, stack_name=None):
         self.env = environment
-        if not stack_id and not stack_name:
-            raise RequestError('stack ID or stack name must be provided')
-        elif stack_name and not stack_id:
+        if stack_id:
+            self.stack_url = '{}/{}'.format(self.object_url, stack_id)
+            stack_data = environment.request(self.stack_url, 'GET')
+        elif stack_name:
             self.name = stack_name
             stack_data = self.find_by_name()
             if stack_data:
                 self.stack_url = '{}/{}'.format(self.object_url, stack_data.get('id'))
         else:
-            self.stack_url = '{}/{}'.format(self.object_url, stack_id)
-            stack_data = environment.request(self.stack_url, 'GET')
+            # Create stack object for list fetch
+            stack_data = {}
         # Read only values
+        self.state = stack_data.get('state') or None
         self.healthState = stack_data.get('healthState') or None
         self.id = stack_data.get('id') or None
         self.serviceIds = stack_data.get('serviceIds') or []
@@ -44,6 +46,7 @@ class Stack(CattleObject):
             'id': self.id,
             'name': self.name,
             'url': self.env.endpoint + self.stack_url,
+            'state': self.state,
             'healthState': self.healthState,
             'serviceIds': self.serviceIds,
             'system': self.system,
@@ -77,6 +80,7 @@ class Stack(CattleObject):
             'startOnCreate': self.startOnCreate
         }
         new_stack = self.env.request(self.object_url, 'POST', data=data)
+        self.state = new_stack.get('state')
         self.healthState = new_stack.get('healthState')
         self.id = new_stack.get('id')
         self.serviceIds = new_stack.get('serviceIds')
@@ -84,6 +88,8 @@ class Stack(CattleObject):
         self.stack_url = '{}/{}'.format(self.object_url, self.id)
 
     def save(self):
+        if not self.id:
+            raise RequestError
         data = {
             'binding': self.binding,
             'description': self.description,
@@ -98,8 +104,8 @@ class Stack(CattleObject):
 
     # Actions
 
-    def activate_service(self):
-        return self.action('activateservice')
+    def activate_services(self):
+        return self.action('activateservices')
 
     def deactivate_services(self):
         return self.action('deactivateservices')

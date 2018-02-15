@@ -18,6 +18,7 @@ class Service(CattleObject):
             self.service_url = '{}/{}'.format(self.object_url, service_id)
             service_data = environment.request(self.service_url, 'GET')
         # Read only values
+        self.state = service_data.get('state') or None
         self.healthState = service_data.get('healthState') or None
         self.id = service_data.get('id') or None
         self.instanceIds = service_data.get('instanceIds') or []
@@ -53,6 +54,7 @@ class Service(CattleObject):
         json = {
             'id': self.id,
             'name': self.name,
+            'state': self.state,
             'healthState': self.healthState,
             'instanceIds': self.instanceIds,
             'system': self.system,
@@ -100,6 +102,7 @@ class Service(CattleObject):
             'vip': self.vip,
         }
         new_stack = self.env.request(self.object_url, 'POST', data=data)
+        self.state = new_stack.get('state')
         self.healthState = new_stack.get('healthState')
         self.id = new_stack.get('id')
         self.instanceIds = new_stack.get('instanceIds')
