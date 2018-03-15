@@ -28,7 +28,7 @@ class Stack(CattleObject):
         self.binding = stack_data.get('binding') or {}
         self.description = stack_data.get('description') or None
         self.dockerCompose = stack_data.get('dockerCompose') or ''
-        self.environment = stack_data.get('env') or {}
+        self.environment = stack_data.get('environment') or {}
         self.externalId = stack_data.get('externalId') or None
         self.group = stack_data.get('group') or None
         self.name = stack_data.get('name') or stack_name
