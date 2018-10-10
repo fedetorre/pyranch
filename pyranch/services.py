@@ -142,6 +142,12 @@ class Service(CattleObject):
         response = self.env.request(self.service_url, 'PUT', {"scale": self.scale})
         return self.env.request(self.service_url, 'PUT', {"scale": self.scale})
 
+    def scale_to(self, scale):
+        if scale <= 0:
+            raise RequestError('Scale can\'t be lower than 0, requested {}'.format(self.scale - scale))
+        self.scale = scale
+        return self.env.request(self.service_url, 'PUT', {"scale": self.scale})
+
     # http://docs.rancher.com/rancher/v1.3/en/api/v2-beta/api-resources/serviceLog/
     def logs(self):
         return self.env.request('{}/servicelogs'.format(self.service_url), 'GET')
