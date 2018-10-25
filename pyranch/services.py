@@ -184,6 +184,6 @@ class Service(CattleObject):
     def set_service_links(self, service_links):
         return self.action('setservicelinks', data=service_links)
 
-    def upgrade(self, in_service_strategy, to_service_strategy):
+    def service_upgrade(self, in_service_strategy, to_service_strategy):
         return self.action('upgrade', data={'inServiceStrategy': in_service_strategy,
                                             'toServiceStrategy': to_service_strategy})
