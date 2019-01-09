@@ -1,5 +1,10 @@
 from base64 import b64encode
-from urlparse import urljoin
+try:
+    # Python 3
+    from urllib.parse import urljoin
+except (ImportError) as e:
+    # Python 2
+    from urlparse import urljoin
 
 import websocket
 
