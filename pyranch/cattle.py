@@ -16,11 +16,24 @@ from .subscribe import Subscribe
 class Environment(object):
     def __init__(self, url, access_key, secret_key, project_id=None, port=80, api_version='v2-beta'):
         endpoint = urljoin(url + ':' + str(port), api_version + '/projects/' + project_id + '/')
+        self.project_id = project_id
         self.endpoint = endpoint
         self.auth = (access_key, secret_key)
         self.__dict__ = self.request(endpoint[:-1], 'GET')
         self.endpoint = endpoint
         self.auth = (access_key, secret_key)
+
+        # Readonly fields
+        self.project_data = None
+
+    def __getattr__(self, name):
+        if self.project_data is None:
+            if self.project_id:
+                self.project_data = self.request(self.endpoint[:-1], 'GET')
+            else:
+                # Create project object for list fetch
+                self.project_data = {}
+        return self.project_data.get('name') or None
 
     def __call__(self):
         print(json.dumps(self.__dict__, indent=4))
