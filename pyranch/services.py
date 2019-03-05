@@ -7,16 +7,18 @@ class Service(CattleObject):
 
     def __init__(self, environment, service_id=None, service_name=None):
         self.env = environment
-        if not service_id and not service_name:
-            raise RequestError('Service ID or service name must be provided')
-        elif service_name and not service_id:
+        if service_id:
+            self.service_url = '{}/{}'.format(self.object_url, service_id)
+            service_data = environment.request(self.service_url, 'GET')
+        elif service_name:
             self.name = service_name
             service_data = self.find_by_name()
             if service_data:
                 self.service_url = '{}/{}'.format(self.object_url, service_data.get('id'))
         else:
-            self.service_url = '{}/{}'.format(self.object_url, service_id)
-            service_data = environment.request(self.service_url, 'GET')
+            # Create service object for list fetch
+            service_data = {}
+
         # Read only values
         self.state = service_data.get('state') or None
         self.healthState = service_data.get('healthState') or None
