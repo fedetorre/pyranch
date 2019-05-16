@@ -1,5 +1,9 @@
 import requests
 import json
+
+from pyranch.storage_drivers import StorageDriver
+from pyranch.volumes import Volume
+
 try:
     # Python 3
     from urllib.parse import urljoin
@@ -242,9 +246,8 @@ class Environment(object):
         return Stack(environment=self, stack_id=stack_id, stack_name=stack_name)
 
     # http://docs.rancher.com/rancher/v1.3/en/api/v2-beta/api-resources/storageDriver/
-    def storage_driver(self):
-        # TODO check if it's relevant to env
-        pass
+    def storage_driver(self, storage_driver_id=None, storage_driver_name=None):
+        return StorageDriver(environment=self, storage_driver_id=storage_driver_id, storage_driver_name=storage_driver_name)
 
     # http://docs.rancher.com/rancher/v1.3/en/api/v2-beta/api-resources/storageDriverService/
     def storage_driver_service(self):
@@ -261,9 +264,8 @@ class Environment(object):
         return Subscribe(environment=self, *args, **kwargs)
 
     # http://docs.rancher.com/rancher/v1.3/en/api/v2-beta/api-resources/volume/
-    def volume(self):
-        # TODO
-        pass
+    def volume(self, volume_id=None, volume_name=None):
+        return Volume(environment=self, volume_id=volume_id, volume_name=volume_name)
 
     # http://docs.rancher.com/rancher/v1.3/en/api/v2-beta/api-resources/volumeTemplate/
     def volume_template(self):
