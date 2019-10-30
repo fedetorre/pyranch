@@ -141,7 +141,6 @@ class Service(CattleObject):
 
     def scale_out(self, scale):
         self.scale += scale
-        response = self.env.request(self.service_url, 'PUT', {"scale": self.scale})
         return self.env.request(self.service_url, 'PUT', {"scale": self.scale})
 
     def scale_to(self, scale):
