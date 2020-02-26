@@ -12,6 +12,9 @@ def get_version():
                 return eval(line.split("=")[-1])
 
 
+with open("README.md", "r") as readme_file:
+    readme = readme_file.read()
+
 setup(
     name = 'pyranch',
     version = get_version(),
@@ -21,7 +24,9 @@ setup(
     url = 'https://github.com/fedetorre/pyranch',
     license = 'LGPLv3',
     install_requires=required,
-    long_description = open('README.md').read(),
+    description="Rancher API SDK",
+    long_description = readme,
+    long_description_content_type="text/markdown",
     classifiers = [
         'Development Status :: 1 - Planning',
         'Intended Audience :: Developers',
