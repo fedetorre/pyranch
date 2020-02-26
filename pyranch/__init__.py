@@ -2,5 +2,5 @@ from .exceptions import APIException, JSONDecodeError, NoTokenProvided, Response
 from .cattle import Environment
 
 __title__ = "pyranch"
-__version__ = "1.4.4"
+__version__ = "1.0.0"
 __author__ = "Federico Torresan"
